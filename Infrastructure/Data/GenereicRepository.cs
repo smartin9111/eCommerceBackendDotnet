@@ -34,11 +34,13 @@ namespace Infrastructure.Data
 
         public async Task<IReadOnlyList<T>> ListAsync(ISpecification<T> spec)
         {
+            Console.WriteLine("+++++++++++++++++++listasync");
             return await ApplySpecification(spec).ToListAsync();
         }
 
         private IQueryable<T> ApplySpecification(ISpecification<T> spec)
         {
+            Console.WriteLine("++++++++++++applyspec");
             return SpecificationEvaluattor<T>.GetQuery(_context.Set<T>().AsQueryable(), spec);
         }
     }
