@@ -5,6 +5,8 @@ using Core.Interfaces;
 using Core.Specification;
 using Microsoft.AspNetCore.Mvc;
 using API.Errors;
+using Microsoft.EntityFrameworkCore.Design;
+using Infrastructure.Data.Migrations;
 
 namespace API.Controllers
 {
@@ -13,14 +15,18 @@ namespace API.Controllers
         private readonly IGenericRepository<Product> _productsRepo;
         private readonly IGenericRepository<ProductBrand> _productBrandRepo;
         private readonly IGenericRepository<ProductType> _productTypeRepo;
+        private readonly IGenericRepository<Test> _testRepo;
         private readonly IMapper _mapper;
 
-        public ProductsController(IGenericRepository<Product> productsRepo, IGenericRepository<ProductBrand> productBrandRepo, IGenericRepository<ProductType> productTypeRepo, IMapper mapper)
+        public ProductsController(IGenericRepository<Product> productsRepo, IGenericRepository<ProductBrand> productBrandRepo, IGenericRepository<Test> testRepo, IGenericRepository<ProductType> productTypeRepo, IMapper mapper)
         {
             _productTypeRepo = productTypeRepo;
             _productBrandRepo = productBrandRepo;
             _productsRepo = productsRepo;
+            _testRepo = testRepo;
             _mapper = mapper;
+
+
         }
 
         [HttpGet]
@@ -28,7 +34,6 @@ namespace API.Controllers
             string? sort, int? brandId, int? typeId)
         {
             var spec = new ProductWithTypeAndBrandsSpecification(sort, brandId, typeId);
-            Console.WriteLine("++++++++++++++++++++++product");
             var products = await _productsRepo.ListAsync(spec);
 
             return Ok(_mapper
@@ -59,5 +64,7 @@ namespace API.Controllers
         {
             return Ok(await _productTypeRepo.ListAllAsync());
         }
+
+       
     }
 }

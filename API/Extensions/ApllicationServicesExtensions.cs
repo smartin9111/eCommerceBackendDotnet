@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using API.Data;
 using API.Errors;
 using Core.Interfaces;
 using Infrastructure.Data;
@@ -21,6 +22,7 @@ namespace API.Extensions
             {
                 opt.UseSqlite(config.GetConnectionString("DefaultConnection"));
             });
+            services.AddScoped<ITestRepository, TestRepository>();
             services.AddScoped<IProductRepository, ProductRepository>();
             services.AddScoped(typeof(IGenericRepository<>), typeof(GenereicRepository<>));
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());

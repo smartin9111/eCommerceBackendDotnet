@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Core.Entities;
 using Core.Interfaces;
 using Core.Specification;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Data
@@ -34,14 +35,40 @@ namespace Infrastructure.Data
 
         public async Task<IReadOnlyList<T>> ListAsync(ISpecification<T> spec)
         {
-            Console.WriteLine("+++++++++++++++++++listasync");
             return await ApplySpecification(spec).ToListAsync();
         }
 
         private IQueryable<T> ApplySpecification(ISpecification<T> spec)
         {
-            Console.WriteLine("++++++++++++applyspec");
             return SpecificationEvaluattor<T>.GetQuery(_context.Set<T>().AsQueryable(), spec);
         }
+
+        public async Task<Test> UpdateEntity(Test test)
+        {
+            _context.Entry(test).State = EntityState.Modified;
+            await _context.SaveChangesAsync();
+            return test;
+        }
+
+        public async Task<Test> AddEntity(Test test)
+        {
+            _context.Set<Test>().Add(test);
+            await _context.SaveChangesAsync();
+            return test;
+        }
+
+        public async Task<Test> DeleteEntity(int id)
+        {
+            var entity = await GetByIdAsync(id);
+            if (entity == null)
+            {
+                return null;
+            }
+
+            _context.Set<T>().Remove(entity);
+            await _context.SaveChangesAsync();
+            return null;
+        }
+
     }
 }
